@@ -1,6 +1,6 @@
 
 #include "config.h"
-#include "Sonar.h"
+
 
 //------------------------------------------------------------------------------
 // GLOBALS
@@ -73,7 +73,7 @@ void position(float npx,float npy) {
 void line(float newx,float newy) {
   long i;
   long over= 0;
-  
+
   long dx  = newx-px;
   long dy  = newy-py;
   int dirx = dx>0?1:-1;
@@ -134,12 +134,12 @@ void arc(float cx,float cy,float x,float y,float dir) {
   float angle1=atan3(dy,dx);
   float angle2=atan3(y-cy,x-cx);
   float theta=angle2-angle1;
-  
+
   if(dir>0 && theta<0) angle2+=2*PI;
   else if(dir<0 && theta>0) angle1+=2*PI;
-  
+
   theta=angle2-angle1;
-  
+
   // get length of arc
   // float circ=PI*2.0*radius;
   // float len=theta*circ/(PI*2.0);
@@ -147,20 +147,20 @@ void arc(float cx,float cy,float x,float y,float dir) {
   float len = abs(theta) * radius;
 
   int i, segments = ceil( len * MM_PER_SEGMENT );
- 
+
   float nx, ny, angle3, scale;
 
   for(i=0;i<segments;++i) {
     // interpolate around the arc
     scale = ((float)i)/((float)segments);
-    
+
     angle3 = ( theta * scale ) + angle1;
     nx = cx + cos(angle3) * radius;
     ny = cy + sin(angle3) * radius;
     // send it to the planner
     line(nx,ny);
   }
-  
+
   line(x,y);
 }
 
@@ -202,7 +202,7 @@ void where() {
   output("Y",py);
   output("F",fr);
   Serial.println(mode_abs?"ABS":"REL");
-} 
+}
 
 
 /**
@@ -286,13 +286,34 @@ void ready() {
  */
 void setup() {
   Serial.begin(BAUD);  // open coms
-  Sonarsetup();
-  setup_controller();  
+  setup_controller();
   position(0,0);  // set staring position
   feedrate((MAX_FEEDRATE + MIN_FEEDRATE)/2);  // set default speed
 
+  // Testing Sonar Sensors
+  SonarSetup();
+  testSonar();
+
   help();  // say hello
   ready();
+}
+
+/**
+ * Testing sonar sensors
+ */
+void testSonar(){
+    Serial.print("Left Distnace: ");
+    Serial.println(getLeftSensorDistance());
+    Serial.print("Front Distnace: ");
+    Serial.println(getFrontSensorDistance());
+    Serial.print("Right Distnace: ");
+    Serial.println(getRightSensorDistance());
+    Serial.print("Back#1 Distnace: ");
+    Serial.println(getBackSensor1Distance());
+    Serial.print("Back#2 Distnace: ");
+    Serial.println(getBackSensor2Distance());
+    Serial.print("Back#3 Distnace: ");
+    Serial.println(getBackSensor3Distance());
 }
 
 
@@ -302,8 +323,11 @@ void setup() {
 void loop() {
   // listen for serial commands
   while(Serial.available() > 0) {  // if something is available
+    //TODO: Here we would want to read from file instead of serial
     char c=Serial.read();  // get it
+
     Serial.print(c);  // repeat it back so I know you got the message
+
     if(sofar<MAX_BUF-1) buffer[sofar++]=c;  // store it
     if((c=='\n') || (c == '\r')) {
       // entire message received
