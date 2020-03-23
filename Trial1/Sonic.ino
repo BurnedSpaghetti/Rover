@@ -55,7 +55,7 @@ float getRightSensorDistance(){
 }
 
 float getLeftSensorDistance(){
-    return getSonarDistance(trigPin2,echoPin2);
+    return getSonicDistance(trigPin2,echoPin2);
 }
 
 float getFrontSensorDistance(){

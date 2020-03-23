@@ -421,7 +421,7 @@ void setup() {
   m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
   m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
   Compass_setup();
-  SonarSetup();
+  //SonarSetup();
   testSonar();
   help();  // say hello
   position(0,0,0,0);  // set staring position
