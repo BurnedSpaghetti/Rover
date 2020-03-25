@@ -16,7 +16,7 @@ void Compass_setup() {
   }
 }
 
-void Compass() {
+float Compass() {
   /* Get a new sensor event */
   sensors_event_t event;
   mag.getEvent(&event);

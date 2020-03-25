@@ -33,7 +33,8 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
-
+#include <SPI.h>
+#include <SD.h>
 
 //------------------------------------------------------------------------------
 // STRUCTS
@@ -46,8 +47,6 @@ typedef struct {
   long over;
 } Axis;
 
-
-
 //------------------------------------------------------------------------------
 // GLOBALS
 //------------------------------------------------------------------------------
@@ -58,10 +57,8 @@ Adafruit_MotorShield AFMS1 = Adafruit_MotorShield(0x70);
 // Create the motor shield object with the default I2C address
 Adafruit_StepperMotor *m[4];
 
-
 Axis a[4];  // for line()
 Axis atemp;  // for line()
-
 
 char buffer[MAX_BUF];  // where we store the message until we get a ';'
 int sofar;  // how much is in the buffer
@@ -77,6 +74,14 @@ char mode_abs=1;  // absolute mode?
 
 long line_number=0;
 static char serialBuffer[MAX_BUF+1]; // Serial buffer
+
+// SD Card CS pin, change to match your board/shields
+const int chipSelect = 53; // CS pin
+Sd2Card card;
+SdVolume volume;
+File readFile;
+const String readFileName = "M.gc";
+
 //------------------------------------------------------------------------------
 // METHODS
 //------------------------------------------------------------------------------
@@ -406,32 +411,10 @@ void ready() {
   Serial.print(F(">"));  // signal ready to receive input
 }
 
-
 /**
- * First thing this machine does on startup.  Runs only once.
+ * Testing sonic sensors
  */
-void setup() {
-  Serial.begin(BAUD);  // open coms
-
-  AFMS0.begin(); // Start the shieldS
-  AFMS1.begin();
-  
-  m[0] = AFMS0.getStepper(STEPS_PER_TURN, 1);
-  m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
-  m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
-  m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
-  Compass_setup();
-  //SonarSetup();
-  testSonar();
-  help();  // say hello
-  position(0,0,0,0);  // set staring position
-  feedrate(200);  // set default speed
-  ready();
-}
-/**
- * Testing sonar sensors
- */
-void testSonar(){
+void testSonic(){
     Serial.print("Left Distnace: ");
     Serial.println(getLeftSensorDistance());
     Serial.print("Front Distnace: ");
@@ -446,13 +429,44 @@ void testSonar(){
     Serial.println(getBackSensor3Distance());
 }
 
+
+/**
+ * First thing this machine does on startup.  Runs only once.
+ */
+void setup() {
+  Serial.begin(9600);  // open coms
+  Serial.println("*** Starting Rover Program ***");
+  Serial.println("*** setup() ");
+
+  AFMS0.begin(); // Start the shieldS
+  AFMS1.begin();
+  
+  m[0] = AFMS0.getStepper(STEPS_PER_TURN, 1);
+  m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
+  m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
+  m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
+  
+  CardSetup();
+  if(checkCanOpenFile(readFileName)){
+    readFile = SD.open(readFileName, FILE_READ);
+  }
+  //Compass_setup();
+  //SonicSetup();
+  //testSonic();
+  //help();  // say hello
+  position(0,0,0,0);  // set staring position
+  feedrate(200);  // set default speed
+  ready();
+}
+
+
 /**
  * After setup() this machine will repeat loop() forever.
  */
 void loop() {
   // listen for serial commands
-  while(Serial.available() > 0) {  // if something is available
-    char c=Serial.read();  // get it
+  while(readFile.available() > 0) {  // if something is available
+    char c=readFile.read();  // get it
     Serial.print(c);  // repeat it back so I know you got the message
     if(sofar<MAX_BUF-1) buffer[sofar++]=c;  // store it
     if(c=='\n') {
