@@ -451,9 +451,9 @@ void setup() {
     readFile = SD.open(readFileName, FILE_READ);
   }
   //Compass_setup();
-  //SonicSetup();
-  //testSonic();
-  //help();  // say hello
+  SonicSetup();
+  testSonic();
+  help();  // say hello
   position(0,0,0,0);  // set staring position
   feedrate(200);  // set default speed
   ready();
@@ -465,9 +465,10 @@ void setup() {
  */
 void loop() {
   // listen for serial commands
-  while(readFile.available() > 0) {  // if something is available
-    char c=readFile.read();  // get it
+  while(readFile.available() > 0) {  // if something is in file 
+    char c=readFile.read();  // read it
     Serial.print(c);  // repeat it back so I know you got the message
+    //Serial.print("|");
     if(sofar<MAX_BUF-1) buffer[sofar++]=c;  // store it
     if(c=='\n') {
       // entire message received

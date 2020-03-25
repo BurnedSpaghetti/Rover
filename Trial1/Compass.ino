@@ -5,11 +5,10 @@
 Adafruit_LSM303DLH_Mag_Unified mag = Adafruit_LSM303DLH_Mag_Unified(12345);
 
 void Compass_setup() {
-  Serial.println("Magnetometer Test");
-  Serial.println("");
-  /* Initialise the sensor */
+  Serial.println("\nMagnetometer Setup");
+  // Initialise the sensor 
   if (!mag.begin()) {
-    /* There was a problem detecting the LSM303 ... check your connections */
+    // There was a problem detecting the LSM303 ... check your connections
     Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
     while (1)
       ;
