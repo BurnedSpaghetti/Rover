@@ -80,7 +80,7 @@ const int chipSelect = 53; // CS pin
 Sd2Card card;
 SdVolume volume;
 File readFile;
-const String readFileName = "M.gc";
+const String readFileName = "B.ncc";
 
 //------------------------------------------------------------------------------
 // METHODS
@@ -159,6 +159,7 @@ void release() {
  * @input newy the destination y position
  **/
 void line(float newx,float newy,float newz,float newe) {
+  Serial.println("line()"); 
   a[0].delta = newx-px;
   a[1].delta = newy-py;
   a[2].delta = newz-pz;
@@ -321,6 +322,7 @@ void help() {
  * Read the input buffer and find any recognized commands.  One G or M command per line.
  */
 void processCommand() {
+  Serial.println("Processing command");
   // blank lines
   if(buffer[0]==';') return;
   
@@ -362,6 +364,7 @@ void processCommand() {
   switch(cmd) {
   case  0: 
   case  1: { // line
+    Serial.println("Its a line...");
     feedrate(parsenumber('F',fr));
     line( parsenumber('X',(mode_abs?px:0)) + (mode_abs?0:px),
           parsenumber('Y',(mode_abs?py:0)) + (mode_abs?0:py),
@@ -450,10 +453,14 @@ void setup() {
   if(checkCanOpenFile(readFileName)){
     readFile = SD.open(readFileName, FILE_READ);
   }
+
+  Serial.println(getVelocityInner());
+  Serial.println(getVelocityOuter());
+  
   //Compass_setup();
-  SonicSetup();
-  testSonic();
-  help();  // say hello
+  //SonicSetup();
+  //testSonic();
+  //help();  // say hello
   position(0,0,0,0);  // set staring position
   feedrate(200);  // set default speed
   ready();
@@ -468,7 +475,6 @@ void loop() {
   while(readFile.available() > 0) {  // if something is in file 
     char c=readFile.read();  // read it
     Serial.print(c);  // repeat it back so I know you got the message
-    //Serial.print("|");
     if(sofar<MAX_BUF-1) buffer[sofar++]=c;  // store it
     if(c=='\n') {
       // entire message received
@@ -476,6 +482,11 @@ void loop() {
       Serial.print(F("\r\n"));  // echo a return character for humans
       processCommand();  // do something with the command
       ready();
+    }
+    if(readFile.available() == 0){
+      //Closing file after no more thing to read
+      readFile.close();
+      Serial.println("\nFinished reading from the file.");
     }
   }
 }
