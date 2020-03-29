@@ -18,6 +18,7 @@ float duration;
  *  Setting up Sonic Sensor
  */
 void SonicSetup(){
+    Serial.println("\nInitializing Sonic Sensors...");
     pinMode(trigPin1, OUTPUT);
     pinMode(trigPin2, OUTPUT);
     pinMode(trigPin3, OUTPUT);
@@ -43,13 +44,13 @@ float getSonicDistance(int trigPin,int echoPin){
     
     //For Centimeters use  29.1
     //For Inches use 74
-    return (duration/2) / 74; // Calculating and returning distance.
+    return (duration/2) / 74; // Calculating and returning distance. Adjust accordingly.
 }
 
 /**
  * Getter methods for each sonar sensor
  */
-
+ 
 float getRightSensorDistance(){
     return getSonicDistance(trigPin1,echoPin1);
 }

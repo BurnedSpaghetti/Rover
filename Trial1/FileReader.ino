@@ -35,7 +35,7 @@ void CardSetup(){
   root.ls(LS_R | LS_DATE);
   Serial.println("-------------------------------\n");
 
-  Serial.println(checkCanOpenFile(readFileName));
+  //Serial.println(checkCanOpenFile(readFileName));
 }
 
 bool checkCanOpenFile(String fileName){

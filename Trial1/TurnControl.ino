@@ -22,27 +22,25 @@ float getVelocityForOuter(){
 }
 
 
-// Turning Left 90*
-void turnLeft(){
-
-}
-
-
 void turnToHeading(float heading, int motorInner, int motorOuter){
   String turnDirection;
-  int distance = (int) (getCurrentHeading() + heading) % 360; // 360 is temp, put according Compass resolution number later
+  int rotationDistance = (int)(heading - getCurrentHeading() + 540) % 360 - 180; // constants are temp, put according Compass resolution later
     
-  if(distance <= 180 ){ 
+  if(rotationDistance > 0){ 
      turnDirection = "BACKWARD";
   }
   else{
     turnDirection = "FORWARD";
   }
+  
   Serial.print("From heading ");
   Serial.print(getCurrentHeading());
   Serial.print(" to -> ");
   Serial.print(heading);
-  Serial.println(" turning " + turnDirection);
- 
+  Serial.println(" turning " + turnDirection + "s");
+
+  while(getCurrentHeading() != heading){
+    // set motor speeds
+  }
   
 }

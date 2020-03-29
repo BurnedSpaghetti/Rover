@@ -448,17 +448,18 @@ void setup() {
   m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
   m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
   m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
-  
+
+  /*
   CardSetup();
   if(checkCanOpenFile(readFileName)){
     readFile = SD.open(readFileName, FILE_READ);
   }
-
-  turnToHeading(180, 1, 2);
-  
+    */
+  SonicSetup();
+  testSonic();
   //Compass_setup();
-  //SonicSetup();
-  //testSonic();
+  turnToHeading(170, 1, 2);
+  
   //help();  // say hello
   position(0,0,0,0);  // set staring position
   feedrate(200);  // set default speed
