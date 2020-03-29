@@ -30,3 +30,8 @@ float Compass() {
     return heading = 360 + heading;
   }
 }
+
+// Finilize this function
+float getCurrentHeading(){
+  return 5;
+}

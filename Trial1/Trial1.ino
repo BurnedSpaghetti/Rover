@@ -80,7 +80,7 @@ const int chipSelect = 53; // CS pin
 Sd2Card card;
 SdVolume volume;
 File readFile;
-const String readFileName = "B.ncc";
+const String readFileName = "O.gc";
 
 //------------------------------------------------------------------------------
 // METHODS
@@ -322,7 +322,7 @@ void help() {
  * Read the input buffer and find any recognized commands.  One G or M command per line.
  */
 void processCommand() {
-  Serial.println("Processing command");
+  //Serial.println("Processing command");
   // blank lines
   if(buffer[0]==';') return;
   
@@ -454,8 +454,7 @@ void setup() {
     readFile = SD.open(readFileName, FILE_READ);
   }
 
-  Serial.println(getVelocityInner());
-  Serial.println(getVelocityOuter());
+  turnToHeading(180, 1, 2);
   
   //Compass_setup();
   //SonicSetup();
@@ -474,7 +473,7 @@ void loop() {
   // listen for serial commands
   while(readFile.available() > 0) {  // if something is in file 
     char c=readFile.read();  // read it
-    Serial.print(c);  // repeat it back so I know you got the message
+    //Serial.print(c);  // repeat it back so I know you got the message
     if(sofar<MAX_BUF-1) buffer[sofar++]=c;  // store it
     if(c=='\n') {
       // entire message received
@@ -483,6 +482,7 @@ void loop() {
       processCommand();  // do something with the command
       ready();
     }
+    //delay(50);
     if(readFile.available() == 0){
       //Closing file after no more thing to read
       readFile.close();

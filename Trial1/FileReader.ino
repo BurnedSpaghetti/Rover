@@ -21,7 +21,7 @@ void CardSetup(){
     }
   }
 
-  // Opening 'volume'/'partition' on card
+  // Opening 'volume' on card
   if (!volume.init(card)) {
     Serial.println("Could not find FAT16/FAT32 partition.");
     Serial.println("Make sure you've formatted the card.");
