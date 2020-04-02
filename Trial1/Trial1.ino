@@ -432,6 +432,18 @@ void testSonic(){
     Serial.println(getBackSensor3Distance());
 }
 
+/**
+ * Stepper Speed Test
+ */
+void stepperTest(int left, int right, int steps){
+  Serial.println("Runnig Motor Speed Test...");
+
+  while(steps > 0){
+    onestep(left, 1);
+    onestep(right, 1); 
+    steps--;
+  }
+}
 
 /**
  * First thing this machine does on startup.  Runs only once.
@@ -448,17 +460,47 @@ void setup() {
   m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
   m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
   m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
+  
+
+  delay(3000);
+  // This is assuming:
+  // m[0] - is left motor
+  // m[1] - is right motor
+  // Trying to move them at the same speed
+  Serial.println("Moving at the same speed ???");
+  m[0] -> setSpeed(100);
+  m[1] -> setSpeed(100);
+  stepperTest(0, 1, 600);
+  delay(5000);
+
+    // Trying to move left faster
+  Serial.println("Moving left faster ???");
+  m[0] -> setSpeed(10);
+  m[1] -> setSpeed(300);
+  stepperTest(0, 1, 600);
+  delay(5000);
+
+  
+    // Trying to move right faster
+  Serial.println("Moving right faster ???");
+  m[0] -> setSpeed(300);
+  m[1] -> setSpeed(10);
+  stepperTest(0, 1, 600);
+  delay(5000);
+
+  
 
   /*
   CardSetup();
   if(checkCanOpenFile(readFileName)){
     readFile = SD.open(readFileName, FILE_READ);
   }
-    */
-  SonicSetup();
-  testSonic();
+  */
+    
+  //SonicSetup();
+  //testSonic();
   //Compass_setup();
-  turnToHeading(170, 1, 2);
+  //turnToHeading(170, 1, 2);
   
   //help();  // say hello
   position(0,0,0,0);  // set staring position

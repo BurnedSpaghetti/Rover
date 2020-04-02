@@ -22,17 +22,19 @@ float getVelocityForOuter(){
 }
 
 
-void turnToHeading(float heading, int motorInner, int motorOuter){
+void turnToHeading(float heading, Adafruit_StepperMotor motorInner, int motorOuter){
   String turnDirection;
   int rotationDistance = (int)(heading - getCurrentHeading() + 540) % 360 - 180; // constants are temp, put according Compass resolution later
     
+  // Also put conditon to no not overstep paint
+  
   if(rotationDistance > 0){ 
      turnDirection = "BACKWARD";
   }
   else{
     turnDirection = "FORWARD";
   }
-  
+
   Serial.print("From heading ");
   Serial.print(getCurrentHeading());
   Serial.print(" to -> ");
@@ -41,6 +43,7 @@ void turnToHeading(float heading, int motorInner, int motorOuter){
 
   while(getCurrentHeading() != heading){
     // set motor speeds
+    
   }
   
 }
