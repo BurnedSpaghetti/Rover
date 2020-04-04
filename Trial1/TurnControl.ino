@@ -2,14 +2,12 @@
  * Turn Control Functions
  */
 
-// Measurments in inches
-const float velocity = 100; //still in reserch as to what vel is best for paint
-const float swingRadius = 25;
-const float distanceBetweenWheels = 15;
-const float axleToPaintNozzleDsitance;
+// Measurments in inches, not fully finalized yet
+const float velocity = 10; //Temporary, still in reserch as to what vel is best, maybe will use RPMs 
+const float swingRadius = 9.8;
+const float distanceBetweenWheels = 7.1;
+const float axleMiddleToPaintNozzleDsitance;
 
-//float velocityInner = velocity *(1 - (distanceBetweenWheels / (2 * swingRadius)));
-//float velocityOuter = velocity *(1 + (distanceBetweenWheels / (2 * swingRadius)));
 
 // Velocity for the inner wheel of turning curve
 float getVelocityForInner(){
@@ -22,28 +20,35 @@ float getVelocityForOuter(){
 }
 
 
-void turnToHeading(float heading, Adafruit_StepperMotor motorInner, int motorOuter){
-  String turnDirection;
+void turnToHeading(float heading, int motorInner, int motorOuter){
+  int turnDirection;
+  // Calculating shortest semicicle of rotation distance 
   int rotationDistance = (int)(heading - getCurrentHeading() + 540) % 360 - 180; // constants are temp, put according Compass resolution later
     
-  // Also put conditon to no not overstep paint
-  
+  // Also put conditon to not run over paint
   if(rotationDistance > 0){ 
-     turnDirection = "BACKWARD";
+     turnDirection = -1; // Backward
   }
   else{
-    turnDirection = "FORWARD";
+    turnDirection = 1; // Forward
   }
 
-  Serial.print("From heading ");
+  Serial.print("Turning from heading ");
   Serial.print(getCurrentHeading());
   Serial.print(" to -> ");
-  Serial.print(heading);
-  Serial.println(" turning " + turnDirection + "s");
+  Serial.println(heading);
 
+  m[motorInner] -> setSpeed(getVelocityForInner());
+  m[motorOuter] -> setSpeed(getVelocityForOuter());
+  
+  Serial.print("Inner motor speed: ");
+  Serial.println(getVelocityForInner());
+  Serial.print("Outer motor speed: ");
+  Serial.println(getVelocityForOuter());
+  
   while(getCurrentHeading() != heading){
-    // set motor speeds
-    
+    onestep(motorInner, turnDirection);
+    onestep(motorOuter, turnDirection);
   }
   
 }

@@ -32,7 +32,7 @@ void Compass() {
   }
 }
 
-// Finilize this function
+// Testing Function
 float getCurrentHeading(){
   return 5;
 }

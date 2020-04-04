@@ -437,6 +437,8 @@ void testSonic(){
  */
 void stepperTest(int left, int right, int steps){
   Serial.println("Runnig Motor Speed Test...");
+    m[left] -> setSpeed(300);
+    m[right] -> setSpeed(10);
 
   while(steps > 0){
     onestep(left, 1);
@@ -460,35 +462,6 @@ void setup() {
   m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
   m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
   m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
-  
-
-  delay(3000);
-  // This is assuming:
-  // m[0] - is left motor
-  // m[1] - is right motor
-  // Trying to move them at the same speed
-  Serial.println("Moving at the same speed ???");
-  m[0] -> setSpeed(100);
-  m[1] -> setSpeed(100);
-  stepperTest(0, 1, 600);
-  delay(5000);
-
-    // Trying to move left faster
-  Serial.println("Moving left faster ???");
-  m[0] -> setSpeed(10);
-  m[1] -> setSpeed(300);
-  stepperTest(0, 1, 600);
-  delay(5000);
-
-  
-    // Trying to move right faster
-  Serial.println("Moving right faster ???");
-  m[0] -> setSpeed(300);
-  m[1] -> setSpeed(10);
-  stepperTest(0, 1, 600);
-  delay(5000);
-
-  
 
   /*
   CardSetup();
@@ -500,7 +473,7 @@ void setup() {
   //SonicSetup();
   //testSonic();
   //Compass_setup();
-  //turnToHeading(170, 1, 2);
+  turnToHeading(150, 0, 1);
   
   //help();  // say hello
   position(0,0,0,0);  // set staring position
